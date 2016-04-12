@@ -1,0 +1,41 @@
+<?php
+/**
+ * @file
+ * Code for the rn_page feature.
+ */
+
+include_once 'rn_page.features.inc';
+
+/**
+ * Implements hook_menu()
+ */
+function rn_page_menu() {
+	
+  $items['drupal-test-task'] = array(
+    'title' => 'Drupal test task',
+    'page callback' => 'rn_page_test_task_page',
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+ }
+
+
+ /**
+ * Outputs users list
+ */
+function rn_page_test_task_page() {
+    $header = array('Uid', 'Name', 'Ection');
+    $rows = array();
+
+    $result = db_select('users', 'u')->fields('u', array('uid', 'name'))->range(1, 51)->execute();
+   
+	foreach ($result as $user) {	
+	  $rows[] = array(
+	  	$user->uid, 
+	  	$user->name, 
+	  	l('egit', '/user/'.$user->uid.'/edit'),
+	  );
+	}
+    return theme('table', array('header' => $header, 'rows' => $rows));
+}
